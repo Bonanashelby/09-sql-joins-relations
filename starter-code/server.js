@@ -52,10 +52,10 @@ app.post('/articles', function(request, response) {
     authors(author, "authorUrl")
     VALUES ($1, $2)
     ON CONFLICT DO NOTHING;`,
-     [
-       request.body.author,
-       request.body.authorUrl
-     ]
+    [
+      request.body.author,
+      request.body.authorUrl
+    ]
   )
   .then(function() {
     // TODO: Write a SQL query to insert a new ***article***, using a sub-query to retrieve the author_id from the authors table
@@ -66,13 +66,13 @@ app.post('/articles', function(request, response) {
        SELECT author_id, $1, $2, $3, $4
        FROM authors
        WHERE author = $5;`,
-       [
-         request.body.title,
-         request.body.category,
-         request.body.publishedOn,
-         request.body.body,
-         request.body.author
-       ]
+      [
+        request.body.title,
+        request.body.category,
+        request.body.publishedOn,
+        request.body.body,
+        request.body.author
+      ]
     )
   })
   .then(function() {
@@ -87,15 +87,36 @@ app.put('/articles/:id', function(request, response) {
   client.query(
   // TODO: Write a SQL query to update an ***author*** record
   // TODO: Add the required values from the request as data for the SQL query to interpolate
-    // `Thing1`,
-    // [Thing2]
+    `UPDATE authors
+    SET title=$1, author=$2, "authorUrl"=$3, category=$4, "publishedOn"=$5, body=$6
+    WHERE author_id=$7;`
+    [
+      request.body.title,
+      request.body.author,
+      request.body.authorUrl,
+      request.body.category,
+      request.body.publishedOn,
+      request.body.body,
+      request.params.id
+    ]
+
   )
   .then(function() {
     // TODO: Write a SQL query to update an **article*** record
     // TODO: Add the required values from the request as data for the SQL query to interpolate
     client.query(
-      // `Thing1`,
-      // [Thing2]
+      `UPDATE articles
+      SET title=$1, author=$2, "authorUrl"=$3, category=$4, "publishedOn"=$5, body=$6
+      WHERE author_id=$7;`
+      [
+        request.body.title,
+        request.body.author,
+        request.body.authorUrl,
+        request.body.category,
+        request.body.publishedOn,
+        request.body.body,
+        request.params.id
+      ]
     )
   })
   .then(function() {
